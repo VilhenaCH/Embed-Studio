@@ -48,7 +48,7 @@ O navegador faz o envio diretamente aos domínios oficiais do Discord. A disponi
 
 Imagens devem ter URLs públicas diretas. O navegador acessa o endereço informado para renderizar a prévia. Não há upload de arquivos. A prévia tem suporte básico a Markdown; a aparência final, emojis, alinhamento e sintaxes avançadas dependem do cliente Discord. Menções são enviadas com `allowed_mentions.parse: []`, evitando notificações involuntárias.
 
-Os imports aceitam os campos editáveis da mensagem; componentes, anexos, enquetes, TTS e outras propriedades extras não são importados. JSONs de outros editores podem ter envelopes próprios que precisam ser removidos (o objeto deve conter `content` e/ou `embeds`).
+Os imports aceitam os campos editáveis da mensagem; componentes interativos, anexos, enquetes, TTS e outras propriedades extras não são importados. JSONs de outros editores podem ter envelopes próprios que precisam ser removidos (o objeto deve conter `content` e/ou `embeds`).
 
 ## Validação manual sugerida
 
@@ -74,3 +74,15 @@ Conforme solicitado, **não foram executados testes automatizados, testes no nav
 - `.nojekyll`: compatibilidade com hospedagem estática no Pages.
 
 Referências: [Discord Webhooks](https://discord.com/developers/docs/resources/webhook#execute-webhook), [Embed Limits](https://discord.com/developers/docs/resources/message#embed-object-embed-limits) e [Frontend Design](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md).
+
+## Botões e formulários (v1.1)
+
+Na seção **Botões e formulários**, adicione até 5 botões de link por mensagem. Cada botão tem um texto (até 80 caracteres) e uma URL http(s) (até 512 caracteres). Os botões aparecem abaixo dos embeds, são salvos nos rascunhos e incluídos na importação/exportação JSON.
+
+**Link de formulário** preenche o texto do botão como “Preencher formulário”. Cole a URL de um formulário publicado em Google Forms, Microsoft Forms, Tally ou outro serviço. O botão abre o formulário no navegador; a criação das perguntas e o armazenamento das respostas são feitos no serviço escolhido. Este app não cria nem recebe respostas de formulários.
+
+Formulários nativos dentro do Discord (modais), botões de confirmação, cargos e ações interativas precisam de uma aplicação Discord e de um backend que processe as interações. Esses recursos não estão incluídos na versão estática de GitHub Pages.
+
+O envio utiliza botões de link de estilo 5 em uma Action Row e o parâmetro with_components=true. Não utiliza Components V2, preservando a compatibilidade com embeds tradicionais. JSONs com componentes diferentes dos botões de link são recusados para evitar perda silenciosa de ações.
+
+Validação manual adicional: adicione um link e um formulário, confira a prévia, recarregue, exporte e reimporte o JSON. Envie ao seu canal de testes e confira a abertura dos destinos. Nenhum teste ou envio foi executado nesta atualização.
