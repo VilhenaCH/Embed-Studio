@@ -1,5 +1,11 @@
 # Embed Studio
 
+## Correção v1.1.1
+
+Corrigido um erro de seleção de elementos que interrompia a inicialização antes da seção de botões. **Botões e formulários** agora aparece no início do editor, antes de Identidade da mensagem. No celular, selecione a aba **Editar**.
+
+Para atualizar, substitua todos os arquivos do site pelo conteúdo deste pacote, preservando a pasta `assets`. As referências de JS e CSS foram versionadas para evitar reutilização dos arquivos antigos em cache. Se a versão antiga continuar aparecendo após sua publicação, recarregue com Ctrl+F5. Não limpe os dados do site: isso apagaria seus rascunhos e webhooks locais. Não foram executados testes nem envios reais nesta correção.
+
 Editor de mensagens embed para Discord, em português, responsivo e pronto para GitHub Pages. Não precisa de instalação, banco de dados, servidor próprio ou etapa de build.
 
 ## Colocar no GitHub Pages
@@ -40,15 +46,15 @@ O webhook determina o canal de destino. O aplicativo cria novas mensagens; não 
 
 ## Dados locais e limites
 
-Tudo é armazenado em `localStorage` no navegador atual. Webhooks são credenciais de envio e são salvos sem criptografia quando você solicita. Não há servidor intermediário, telemetria, dependências externas ou sincronização. Não inclua URLs reais de webhook nos arquivos do repositório.
+Textos, rascunhos e webhooks são armazenados em `localStorage`. Imagens selecionadas ficam em IndexedDB no navegador atual. Webhooks são credenciais de envio e são salvos sem criptografia quando você solicita. Não há servidor intermediário, telemetria, dependências externas ou sincronização. Não inclua URLs reais de webhook nos arquivos do repositório.
 
 Limpar os dados do site apaga rascunhos e webhooks. Abas privadas, bloqueio de armazenamento e falta de espaço podem impedir a persistência. O app mostra falhas de salvamento. Abas simultâneas não sincronizam o estado; prefira editar em uma aba. Para backup de uma mensagem, baixe seu JSON. Esse backup não contém destinos nem credenciais.
 
 O navegador faz o envio diretamente aos domínios oficiais do Discord. A disponibilidade depende da conexão, das permissões e da política de acesso do Discord. Não há proxy. Se não houver confirmação por falha de rede ou tempo esgotado, confira o canal antes de repetir o envio.
 
-Imagens devem ter URLs públicas diretas. O navegador acessa o endereço informado para renderizar a prévia. Não há upload de arquivos. A prévia tem suporte básico a Markdown; a aparência final, emojis, alinhamento e sintaxes avançadas dependem do cliente Discord. Menções são enviadas com `allowed_mentions.parse: []`, evitando notificações involuntárias.
+Imagens podem ser selecionadas do dispositivo ou usar URLs públicas diretas. O navegador acessa o endereço informado para renderizar a prévia. Imagens selecionadas são enviadas como anexos junto da mensagem. A prévia tem suporte básico a Markdown; a aparência final, emojis, alinhamento e sintaxes avançadas dependem do cliente Discord. Menções são enviadas com `allowed_mentions.parse: []`, evitando notificações involuntárias.
 
-Os imports aceitam os campos editáveis da mensagem; componentes interativos, anexos, enquetes, TTS e outras propriedades extras não são importados. JSONs de outros editores podem ter envelopes próprios que precisam ser removidos (o objeto deve conter `content` e/ou `embeds`).
+Os imports aceitam os campos editáveis da mensagem; componentes interativos, outros anexos, enquetes, TTS e outras propriedades extras não são importados. JSONs de outros editores podem ter envelopes próprios que precisam ser removidos (o objeto deve conter `content` e/ou `embeds`).
 
 ## Validação manual sugerida
 
@@ -70,6 +76,7 @@ Conforme solicitado, **não foram executados testes automatizados, testes no nav
 - `styles.css`: aparência e adaptação para celular.
 - `app.js`: interface, prévia, armazenamento e envio.
 - `core.js`: modelos, normalização, validação e serialização.
+- `uploads.js`: seleção de imagens, armazenamento local e envio de anexos.
 - `assets/favicon.svg`: identidade visual local.
 - `.nojekyll`: compatibilidade com hospedagem estática no Pages.
 
@@ -86,3 +93,19 @@ Formulários nativos dentro do Discord (modais), botões de confirmação, cargo
 O envio utiliza botões de link de estilo 5 em uma Action Row e o parâmetro with_components=true. Não utiliza Components V2, preservando a compatibilidade com embeds tradicionais. JSONs com componentes diferentes dos botões de link são recusados para evitar perda silenciosa de ações.
 
 Validação manual adicional: adicione um link e um formulário, confira a prévia, recarregue, exporte e reimporte o JSON. Envie ao seu canal de testes e confira a abertura dos destinos. Nenhum teste ou envio foi executado nesta atualização.
+
+## Upload de imagens (v1.2.0)
+
+No editor, abra **Imagens → Escolher imagem** para selecionar um arquivo do computador ou celular. A seção Imagens já começa aberta e oferece upload para a imagem principal e a miniatura de cada embed. Também é possível usar uma URL. Avatar do remetente e ícones de autor/rodapé continuam usando URLs.
+
+- Formatos: PNG, JPG/JPEG, GIF e WebP. SVG e HEIC não são aceitos.
+- Limites do editor: até 10 MB por arquivo, 10 arquivos distintos e 25 MB somados por mensagem. São limites conservadores do app; o Discord também pode recusar arquivos conforme suas próprias regras.
+- A seleção mostra a prévia imediatamente; o arquivo só vai para o Discord quando você confirmar o envio.
+- O envio utiliza multipart/form-data, files[n], payload_json e attachment://filename. Não exige hospedagem externa de imagens nem backend.
+- Os arquivos ficam em IndexedDB e acompanham os rascunhos neste navegador. Se o armazenamento falhar, a interface informa que a imagem está disponível apenas na aba atual.
+- Limpar os dados do site apaga os arquivos. Imagens sem referência no trabalho atual ou nos rascunhos são removidas do armazenamento ao reabrir o app.
+- O JSON contém a referência da imagem, não seus bytes. Ao importar em outro navegador, selecione as imagens novamente. O envio é bloqueado enquanto houver arquivos locais ausentes.
+
+Substitua **todos os arquivos** ao atualizar, incluindo o novo uploads.js. As versões dos assets foram atualizadas para evitar cache antigo.
+
+Validação manual sugerida: escolha uma imagem e uma miniatura; confira a prévia, salve um rascunho, recarregue e abra-o novamente. Troque e remova imagens, confira um formato não aceito e um arquivo maior que o limite. Envie ao seu canal de testes, inclusive junto de botões. Não foram executados testes, publicação ou envios nesta atualização.

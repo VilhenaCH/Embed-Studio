@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#5865f2">
   <meta name="description" content="Crie mensagens bonitas para sua comunidade. Editor de embeds do Discord com prévia, modelos e webhooks locais.">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: http:; connect-src https://discord.com https://ptb.discord.com https://canary.discord.com https://discordapp.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: http: blob:; connect-src https://discord.com https://ptb.discord.com https://canary.discord.com https://discordapp.com; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
   <title>Embed Studio — Editor para Discord</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./styles.css?v=1.2.0">
+  <script type="module" src="./app.js?v=1.2.0"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -27,7 +27,7 @@
     <div class="sidebar-bottom">
       <div class="local-note"><span data-icon="shield"></span><div><strong>Seu espaço é seu.</strong><p>Rascunhos e webhooks ficam salvos neste navegador.</p></div></div>
       <button class="help-button" data-action="help"><span data-icon="help"></span>Como funciona<span data-icon="arrow-up-right"></span></button>
-      <div class="sidebar-footer"><span class="status-dot"></span>Feito para comunidades<span>v1.1</span></div>
+      <div class="sidebar-footer"><span class="status-dot"></span>Feito para comunidades<span>v1.2.0</span></div>
     </div>
   </aside>
   <div class="app-shell">
@@ -42,6 +42,11 @@
         <div class="mobile-view-switch" role="group" aria-label="Área de trabalho"><button class="active" data-mobile="edit" aria-pressed="true"><span data-icon="edit"></span>Editar</button><button data-mobile="preview" aria-pressed="false"><span data-icon="eye"></span>Prévia</button></div>
         <div class="editor-grid" id="editor-grid">
           <div class="editor-column">
+            <section id="buttons-panel" class="panel buttons-panel" aria-label="Botões e formulários">
+              <div class="panel-title"><h2>Botões e formulários</h2><span class="optional-tag">Até 5 botões</span></div>
+              <p class="buttons-intro">Adicione botões de link ou um atalho para seu formulário.</p>
+              <div class="button-add-actions"><button class="button secondary" data-add-button="link">Adicionar link</button><button class="button secondary" data-add-button="form">Link de formulário</button></div>
+            </section>
             <section class="panel identity-panel">
               <div class="panel-title"><span class="section-icon" data-icon="user"></span><h2>Identidade da mensagem</h2><span class="optional-tag">Opcional</span></div>
               <div class="form-grid"><label>Nome do remetente<input id="message-username" data-message="username" maxlength="80" placeholder="Nome padrão do webhook" autocomplete="off"></label><label>URL do avatar<input id="message-avatar" data-message="avatar_url" type="url" placeholder="https://…" autocomplete="off"></label></div>
