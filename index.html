@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#5865f2">
+  <meta name="description" content="Crie mensagens bonitas para sua comunidade. Editor de embeds do Discord com prévia, modelos e webhooks locais.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: http:; connect-src https://discord.com https://ptb.discord.com https://canary.discord.com https://discordapp.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Embed Studio — Editor para Discord</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Pular para o conteúdo</a>
+  <aside class="sidebar" aria-label="Navegação principal">
+    <a class="brand" href="#editor" aria-label="Embed Studio, editor"><img src="./assets/favicon.svg" alt="" width="38" height="38"><span>embed<span class="brand-light">studio</span><small>Seu Discord, bem apresentado.</small></span></a>
+    <div class="workspace-label">Seu espaço de criação</div>
+    <nav>
+      <button class="nav-item active" data-view="editor" aria-label="Editor de mensagens"><span data-icon="edit"></span><span>Editor de mensagens</span></button>
+      <button class="nav-item" data-view="templates" aria-label="Modelos"><span data-icon="grid"></span><span>Modelos</span><span class="nav-mini">6</span></button>
+      <button class="nav-item" data-view="webhooks" aria-label="Webhooks"><span data-icon="link"></span><span>Webhooks</span><span class="nav-mini" id="webhook-count">0</span></button>
+      <button class="nav-item" data-view="drafts" aria-label="Meus rascunhos"><span data-icon="folder"></span><span>Meus rascunhos</span></button>
+    </nav>
+    <button class="new-message" data-action="new-message"><span data-icon="plus"></span>Nova mensagem</button>
+    <div class="sidebar-bottom">
+      <div class="local-note"><span data-icon="shield"></span><div><strong>Seu espaço é seu.</strong><p>Rascunhos e webhooks ficam salvos neste navegador.</p></div></div>
+      <button class="help-button" data-action="help"><span data-icon="help"></span>Como funciona<span data-icon="arrow-up-right"></span></button>
+      <div class="sidebar-footer"><span class="status-dot"></span>Feito para comunidades<span>v1.0</span></div>
+    </div>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="breadcrumb"><span data-icon="layers"></span><span>Seu workspace</span><span class="crumb-divider">/</span><strong id="breadcrumb-current">Editor</strong></div>
+      <div class="top-actions"><span id="save-status" class="save-status" role="status"><span data-icon="check-circle"></span>Salvo neste navegador</span><button class="button secondary compact" data-action="json"><span data-icon="code"></span><span>JSON</span></button><button class="button primary" data-action="send"><span data-icon="send"></span><span>Enviar mensagem</span></button></div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section id="view-editor" class="view">
+        <div class="page-heading"><div><div class="heading-kicker"><span class="tiny-spark">✦</span> Um pouco de cuidado. Muito mais comunidade.</div><h1>Uma mensagem. Do seu jeito.</h1><p>Monte seu embed, acompanhe a prévia e dê vida ao seu canal.</p></div><button class="button secondary" data-action="save-draft"><span data-icon="bookmark"></span>Salvar rascunho</button></div>
+        <section class="template-strip" aria-labelledby="quick-templates-title"><div class="strip-label"><span data-icon="sparkles"></span><span id="quick-templates-title">Um ponto de partida</span></div><div id="quick-templates" class="quick-templates"></div><button class="text-button" data-view="templates">Ver todos<span data-icon="arrow-right"></span></button></section>
+        <div class="mobile-view-switch" role="group" aria-label="Área de trabalho"><button class="active" data-mobile="edit" aria-pressed="true"><span data-icon="edit"></span>Editar</button><button data-mobile="preview" aria-pressed="false"><span data-icon="eye"></span>Prévia</button></div>
+        <div class="editor-grid" id="editor-grid">
+          <div class="editor-column">
+            <section class="panel identity-panel">
+              <div class="panel-title"><span class="section-icon" data-icon="user"></span><h2>Identidade da mensagem</h2><span class="optional-tag">Opcional</span></div>
+              <div class="form-grid"><label>Nome do remetente<input id="message-username" data-message="username" maxlength="80" placeholder="Nome padrão do webhook" autocomplete="off"></label><label>URL do avatar<input id="message-avatar" data-message="avatar_url" type="url" placeholder="https://…" autocomplete="off"></label></div>
+              <label class="content-label">Mensagem fora do embed <span class="counter" data-count="content">0 / 2000</span><textarea id="message-content" data-message="content" rows="2" maxlength="2000" placeholder="Um recado para acompanhar o embed…"></textarea></label>
+            </section>
+            <div class="embed-bar"><div id="embed-tabs" class="embed-tabs" role="tablist" aria-label="Embeds da mensagem"></div><button class="icon-button" data-action="add-embed" aria-label="Adicionar embed" title="Adicionar embed (até 10)"><span data-icon="plus"></span></button></div>
+            <section class="panel embed-panel">
+              <div class="panel-title"><span class="section-icon" data-icon="layout"></span><h2>Conteúdo do embed</h2><div class="panel-title-actions"><button class="icon-button" data-action="duplicate-embed" aria-label="Duplicar embed" title="Duplicar embed"><span data-icon="copy"></span></button><button class="icon-button danger-hover" data-action="remove-embed" aria-label="Remover embed" title="Remover embed"><span data-icon="trash"></span></button></div></div>
+              <div id="embed-form"></div>
+            </section>
+            <div class="editor-bottom"><span><span data-icon="lock"></span>Salvamento automático neste navegador</span><button class="text-button" data-action="json">Importar ou exportar JSON<span data-icon="arrow-up-right"></span></button></div>
+          </div>
+          <aside class="preview-column" aria-label="Prévia da mensagem">
+            <div class="preview-sticky">
+              <div class="preview-heading"><h2>O resultado, em tempo real</h2><span class="live-label"><span class="status-dot"></span>Ao vivo</span></div>
+              <div class="preview-frame" id="preview-frame">
+                <div class="discord-toolbar"><span class="channel-hash">#</span><strong id="preview-channel">prévia</strong><span class="discord-toolbar-divider"></span><span class="discord-toolbar-hint">Sua próxima publicação</span><span data-icon="users"></span></div>
+                <div class="discord-body"><div class="discord-date"><span>Prévia da mensagem</span></div><div id="message-preview"></div></div>
+                <div class="discord-composer"><span data-icon="plus-circle"></span><span>É assim que sua comunidade vai ver.</span><span data-icon="smile"></span></div>
+              </div>
+              <div class="preview-controls"><span>Visualizar em</span><div class="segmented" role="group" aria-label="Largura da prévia"><button class="active" data-preview-size="desktop" aria-pressed="true" aria-label="Prévia desktop"><span data-icon="monitor"></span></button><button data-preview-size="mobile" aria-pressed="false" aria-label="Prévia mobile"><span data-icon="smartphone"></span></button></div><span class="preview-disclaimer">Prévia aproximada do Discord</span></div>
+              <div class="validation-card" id="validation-card" role="status"></div>
+              <section class="destination-card"><div class="destination-icon" data-icon="send"></div><div><h3>Pronto para chegar ao seu canal?</h3><p>Conecte um webhook e publique quando quiser.</p></div><button class="icon-button" data-action="send" aria-label="Escolher canal de destino"><span data-icon="arrow-right"></span></button></section>
+              <div class="tip-line"><span data-icon="bulb"></span><p>Uma dica: use campos para separar informações e deixar a leitura mais leve.</p></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+      <section id="view-templates" class="view" hidden></section>
+      <section id="view-webhooks" class="view" hidden></section>
+      <section id="view-drafts" class="view" hidden></section>
+      <footer class="main-footer"><span>embedstudio</span><span>Pequenos detalhes. Boas conversas.</span><span>Independente, sem vínculo com o Discord.</span></footer>
+    </main>
+  </div>
+  <dialog id="modal" aria-labelledby="modal-title"><div id="modal-content"></div></dialog>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <noscript><div class="noscript">Ative o JavaScript para usar o editor. Todos os arquivos do app são locais.</div></noscript>
+</body>
+</html>
